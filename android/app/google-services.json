@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "531909223386",
+    "project_id": "dida-pedia-7fbed",
+    "storage_bucket": "dida-pedia-7fbed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531909223386:android:f46920d9de1e2f53e5d6e3",
+        "android_client_info": {
+          "package_name": "com.example.uas_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqT3sVQjkAKzYrQmG8HDxym_d2tSfjDRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
