@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart';
+import 'package:uas_project/helper/firestoreHelper.dart';
+import 'package:uas_project/service/background_service.dart';
 import '../models/product.dart';
-import '../provider/provider.dart';
 import 'cart/carts_product.dart';
 import '../helper/analyticsHelper.dart';
 import '../views/auth/login.dart';
@@ -23,11 +24,11 @@ class MyHome extends StatefulWidget {
 class _MyHomeState extends State<MyHome> {
   late HttpHelper helper;
   List<Product> dataProducts = [];
-  int coin = 0;
   late RewardedAd _rewardedAd;
   bool _isRewardedReady = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   MyAnalyticsHelper analyticsHelper = MyAnalyticsHelper();
+  FirestoreHelper firestoreHelper = FirestoreHelper();
 
   @override
   void initState() {
@@ -44,9 +45,8 @@ class _MyHomeState extends State<MyHome> {
 
   @override
   Widget build(BuildContext context) {
-    var cartProvider = Provider.of<CartProviderV2>(context);
-    String? _email = _auth.currentUser!.email;
-    cartProvider.setUserEmail(_email!);
+    // var cartProvider = Provider.of<CartProviderV2>(context);
+    // cartProvider.setUserEmail(_email!);
 
     return Scaffold(
       appBar: AppBar(
@@ -60,6 +60,7 @@ class _MyHomeState extends State<MyHome> {
             padding: const EdgeInsets.only(right: 10),
             child: IconButton(
               onPressed: () {
+                print(DateTime.now());
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -133,77 +134,91 @@ class _MyHomeState extends State<MyHome> {
   Drawer drawerBurger(BuildContext context) {
     String? _email = _auth.currentUser!.email;
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Color(0xff186F65)),
-            currentAccountPicture: Image.network(
-                "https://seeklogo.com/images/D/d-p-letter-logo-E428C66ABB-seeklogo.com.png"),
-            accountName: Text(
-              "DidaPedia",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            accountEmail: Text(
-              _email!,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          ListTile(
-            leading: Icon(FontAwesomeIcons.coins),
-            title: Text(coin.toString()),
-            onTap: () {
-              _loadRewardedAd();
-              if (_isRewardedReady) {
-                _rewardedAd.show(
-                    onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
-                  setState(() {
-                    coin += 5;
-                  });
-                });
-              }
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.mail),
-            title: Text("Contact Us"),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          AboutListTile(
-            icon: Icon(Icons.info),
-            child: Text("About app"),
-            applicationIcon: Icon(
-              Icons.shopping_bag,
-              size: 35,
-            ),
-            applicationName: "Dida Pedia",
-            applicationVersion: "1.0.0",
-            applicationLegalese: "@didapediacompany",
-            aboutBoxChildren: [
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text("Under Development"),
-              )
-            ],
-          ),
-          ListTile(
-            leading: FaIcon(FontAwesomeIcons.rightFromBracket),
-            title: Text("Log Out"),
-            onTap: () {
-              analyticsHelper.logoutLog(_email);
-              _auth.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => LoginPage(),
+      child: FutureBuilder<int>(
+          future: _loadCoinCount(_email),
+          builder: (context, snapshot) {
+            int? coinCount = snapshot.data;
+
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                UserAccountsDrawerHeader(
+                  decoration: BoxDecoration(color: Color(0xff186F65)),
+                  currentAccountPicture: Image.network(
+                      "https://seeklogo.com/images/D/d-p-letter-logo-E428C66ABB-seeklogo.com.png"),
+                  accountName: Text(
+                    "DidaPedia",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  accountEmail: Text(
+                    _email!,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              );
-            },
-          )
-        ],
-      ),
+                ListTile(
+                  leading: Icon(FontAwesomeIcons.coins),
+                  title: Text(coinCount.toString()),
+                  onTap: () {
+                    _loadRewardedAd();
+                    if (_isRewardedReady) {
+                      _rewardedAd.show(onUserEarnedReward:
+                          (AdWithoutView ad, RewardItem reward) {
+                        setState(() {
+                          _updateCoinCount(_email, coinCount! + 5);
+                        });
+                      });
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.mail),
+                  title: Text("Contact Us"),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                // ListTile(
+                //   leading: Icon(Icons.abc),
+                //   title: Text("Test"),
+                //   onTap: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: (builder) => HomeScreen()));
+                //   },
+                // ),
+                AboutListTile(
+                  icon: Icon(Icons.info),
+                  child: Text("About app"),
+                  applicationIcon: Icon(
+                    Icons.shopping_bag,
+                    size: 35,
+                  ),
+                  applicationName: "Dida Pedia",
+                  applicationVersion: "1.0.0",
+                  applicationLegalese: "@didapediacompany",
+                  aboutBoxChildren: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Under Development"),
+                    )
+                  ],
+                ),
+                ListTile(
+                  leading: FaIcon(FontAwesomeIcons.rightFromBracket),
+                  title: Text("Log Out"),
+                  onTap: () {
+                    analyticsHelper.logoutLog(_email);
+                    _auth.signOut();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => LoginPage(),
+                      ),
+                    );
+                  },
+                )
+              ],
+            );
+          }),
     );
   }
 
@@ -241,5 +256,30 @@ class _MyHomeState extends State<MyHome> {
         },
       ),
     );
+  }
+
+  Future<int> _loadCoinCount(String? email) async {
+    if (email == null) {
+      return 0;
+    }
+
+    try {
+      DocumentSnapshot document =
+          await FirebaseFirestore.instance.collection('users').doc(email).get();
+      if (document.exists) {
+        return document['coins'] ?? 0;
+      } else {
+        return 0;
+      }
+    } catch (e) {
+      print('Error loading coin count: $e');
+      return 0;
+    }
+  }
+
+  void _updateCoinCount(String? email, int newCoinCount) {
+    if (email != null) {
+      firestoreHelper.updateCoins(email, newCoinCount);
+    }
   }
 }

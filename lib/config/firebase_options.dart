@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -49,20 +43,39 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDGRKJaa2dpBb8nMiVb1Dm7CQeZRQuyHHQ',
+    appId: '1:609693408487:web:3eb3997bc15cc4d61a1642',
+    messagingSenderId: '609693408487',
+    projectId: 'projectuas-13440',
+    authDomain: 'projectuas-13440.firebaseapp.com',
+    storageBucket: 'projectuas-13440.appspot.com',
+    measurementId: 'G-K73TEX4G24',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBqT3sVQjkAKzYrQmG8HDxym_d2tSfjDRs',
-    appId: '1:531909223386:android:f46920d9de1e2f53e5d6e3',
-    messagingSenderId: '531909223386',
-    projectId: 'dida-pedia-7fbed',
-    storageBucket: 'dida-pedia-7fbed.appspot.com',
+    apiKey: 'AIzaSyCpTT7BMGZmDj-p2b8ClzFyOfAglPjuyxA',
+    appId: '1:609693408487:android:347242002e8b637b1a1642',
+    messagingSenderId: '609693408487',
+    projectId: 'projectuas-13440',
+    storageBucket: 'projectuas-13440.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBPw94B9pau57zGkHKZZYjzrgT5D4k-HZQ',
-    appId: '1:531909223386:ios:85b63ddb5a755561e5d6e3',
-    messagingSenderId: '531909223386',
-    projectId: 'dida-pedia-7fbed',
-    storageBucket: 'dida-pedia-7fbed.appspot.com',
-    iosBundleId: 'com.example.utsProject',
+    apiKey: 'AIzaSyABktkt0FTyDhHCLudpzgdD8XgLxmN8oGQ',
+    appId: '1:609693408487:ios:3cb564fc224f0dc11a1642',
+    messagingSenderId: '609693408487',
+    projectId: 'projectuas-13440',
+    storageBucket: 'projectuas-13440.appspot.com',
+    iosBundleId: 'com.example.uasProject',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyABktkt0FTyDhHCLudpzgdD8XgLxmN8oGQ',
+    appId: '1:609693408487:ios:471d1cd452e19ba41a1642',
+    messagingSenderId: '609693408487',
+    projectId: 'projectuas-13440',
+    storageBucket: 'projectuas-13440.appspot.com',
+    iosBundleId: 'com.example.uasProject.RunnerTests',
   );
 }

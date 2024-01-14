@@ -1,3 +1,58 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class CartProduct {
+  String id;
+  String email;
+  int qty;
+  String productTitle;
+  double productPrice;
+  String productDescription;
+  String productCategory;
+  String productImage;
+  String datetime;
+
+  CartProduct({
+    required this.id,
+    required this.email,
+    required this.qty,
+    required this.productTitle,
+    required this.productPrice,
+    required this.productDescription,
+    required this.productCategory,
+    required this.productImage,
+    required this.datetime,
+  });
+
+  factory CartProduct.fromDocSnapshot(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return CartProduct(
+        id: doc.id,
+        email: data['email'] ?? '',
+        qty: data['qty'] ?? '',
+        productTitle: data['productTitle'] ?? '',
+        productPrice: data['productPrice']?.toDouble() ?? 0.0,
+        productDescription: data['productDescription'] ?? '',
+        productCategory: data['productCategory'] ?? '',
+        productImage: data['productImage'] ?? '',
+        datetime: data['datetime'] ?? '');
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'email': email,
+      // 'timestamp': timestamp,
+      'qty': qty,
+      'productTitle': productTitle,
+      'productPrice': productPrice,
+      'productDescription': productDescription,
+      'productCategory': productCategory,
+      'productImage': productImage,
+      'datetime': datetime
+    };
+  }
+}
+
 class Product {
   int id;
   String title;
@@ -28,6 +83,18 @@ class Product {
       rating: Rating.fromJson(json['rating']),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'price': price,
+      'description': description,
+      'category': category,
+      'image': image,
+      'rating': rating.toMap(),
+    };
+  }
 }
 
 class Rating {
@@ -44,5 +111,12 @@ class Rating {
       rate: json['rate'].toDouble(),
       count: json['count'],
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'rate': rate,
+      'count': count,
+    };
   }
 }

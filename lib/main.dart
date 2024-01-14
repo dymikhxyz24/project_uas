@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:uas_project/service/background_service.dart';
 import 'views/home.dart';
 import 'provider/provider.dart';
 import 'views/auth/login.dart';
@@ -15,8 +15,10 @@ import 'config/firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // initializeService();
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   MobileAds.instance.initialize();
+
   AwesomeNotifications().initialize(
     "resource://drawable/didapedia",
     [
