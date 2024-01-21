@@ -177,14 +177,6 @@ class _MyHomeState extends State<MyHome> {
                     Navigator.pop(context);
                   },
                 ),
-                // ListTile(
-                //   leading: Icon(Icons.abc),
-                //   title: Text("Test"),
-                //   onTap: () {
-                //     Navigator.push(context,
-                //         MaterialPageRoute(builder: (builder) => HomeScreen()));
-                //   },
-                // ),
                 AboutListTile(
                   icon: Icon(Icons.info),
                   child: Text("About app"),
