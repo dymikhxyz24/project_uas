@@ -60,6 +60,7 @@ class CartsDetails extends StatelessWidget {
                           content: NotificationContent(
                             id: 1,
                             channelKey: "dida_pedia",
+                            actionType: ActionType.Default,
                             title: "Berhasil membeli produk!",
                             body:
                                 "Selamat kamu telah berhasil membeli produk dari DidaPedia :)",
